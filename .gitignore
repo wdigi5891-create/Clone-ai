@@ -14,3 +14,4 @@ storage/*.db
 tsconfig.tsbuildinfo
 next-env.d.ts
 celerybeat-schedule*
+ai-video-cloner.zip
