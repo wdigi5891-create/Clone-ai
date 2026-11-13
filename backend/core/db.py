@@ -11,7 +11,7 @@ class Base(DeclarativeBase):
 
 
 def _make_engine():
-    url = get_settings().database_url
+    url = get_settings().effective_database_url
     if url.startswith("postgresql://"):
         url = url.replace("postgresql://", "postgresql+psycopg://", 1)
     kwargs = {"pool_pre_ping": True}

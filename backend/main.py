@@ -20,7 +20,7 @@ async def lifespan(app: FastAPI):
         logging.warning("SECRET_KEY par défaut : à changer avant tout déploiement.")
     if settings.app_env == "production" and settings.secret_key == "change-me-in-production":
         raise RuntimeError("SECRET_KEY doit être défini en production.")
-    if settings.database_url.startswith("sqlite"):
+    if settings.effective_database_url.startswith("sqlite"):
         Base.metadata.create_all(engine)  # dev sans migrations ; PostgreSQL : alembic upgrade head
     from services.cleanup import cleanup_expired
     try:

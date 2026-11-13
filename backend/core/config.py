@@ -21,7 +21,8 @@ class Settings(BaseSettings):
     public_api_url: str = "http://localhost:8000"
 
     # --- Données
-    database_url: str = f"sqlite:///{REPO_DIR / 'storage' / 'dev.db'}"
+    # Vide = SQLite local (storage/dev.db), pratique en développement
+    database_url: str = ""
     redis_url: str = "redis://localhost:6379/0"
     # "celery" (production) ou "inline" (thread local, sans Redis)
     task_backend: str = "celery"
@@ -64,6 +65,10 @@ class Settings(BaseSettings):
     analysis_language: str = "fr"
     ai_concurrency: int = 3
     vision_max_image_px: int = 1024
+
+    @property
+    def effective_database_url(self) -> str:
+        return self.database_url or f"sqlite:///{REPO_DIR / 'storage' / 'dev.db'}"
 
     @property
     def allowed_ext_set(self) -> set[str]:

@@ -199,9 +199,12 @@ def report_pdf(p: Project) -> bytes:
 
     el = [P("AI VIDEO CLONER", "small"), P(p.name, "title"), Spacer(1, 4),
           P("Rapport d'analyse et de reconstruction vidéo", "small"),
-          P(prompt_engine.NOTICE, "small"), Spacer(1, 10), P("Analyse générale", "h1"),
+          P("Les prompts de ce rapport sont une reconstruction fondée sur l'analyse de l'image et du son "
+            "de la vidéo ; ce ne sont pas les prompts d'origine.", "small"),
+          Spacer(1, 10), P("Analyse générale", "h1"),
           table([("Durée", f"{p.duration:.1f} s"), ("Résolution", f"{p.width} × {p.height} ({p.orientation})"),
-                 ("Fréquence d'images", f"{p.fps:g} i/s"), ("Format", p.format),
+                 ("Fréquence d'images", f"{p.fps:g} i/s"),
+                 ("Format", (Path(p.original_filename).suffix.lstrip(".") or p.format.split(",")[0]).upper()),
                  ("Scènes", len(p.scenes)), ("Personnages", len(p.characters)),
                  ("Langue parlée", p.language or "non détectée"), ("Ambiance", p.mood),
                  ("Style visuel", p.visual_style), ("Résumé", p.summary)])]

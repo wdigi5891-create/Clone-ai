@@ -1,0 +1,54 @@
+# Pile complète : docker compose up --build   (après avoir créé .env à partir de .env.example)
+x-backend: &backend
+  build: ./backend
+  env_file: .env
+  environment:
+    DATABASE_URL: postgresql://videocloner:videocloner@postgres:5432/videocloner
+    REDIS_URL: redis://redis:6379/0
+    TASK_BACKEND: celery
+    STORAGE_LOCAL_DIR: /app/storage/data
+    TEMP_DIR: /app/storage/tmp
+  volumes:
+    - storage:/app/storage
+  depends_on:
+    postgres: { condition: service_healthy }
+    redis: { condition: service_started }
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: videocloner
+      POSTGRES_PASSWORD: videocloner
+      POSTGRES_DB: videocloner
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U videocloner"]
+      interval: 3s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+
+  api:
+    <<: *backend
+    ports: ["8000:8000"]
+
+  worker:
+    <<: *backend
+    command: celery -A workers.celery_app worker -B --loglevel=info --concurrency=2
+    depends_on:
+      api: { condition: service_started }
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:8000
+    ports: ["3000:3000"]
+    depends_on: [api]
+
+volumes:
+  pgdata:
+  storage:

@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: dark; }
+html { scroll-behavior: smooth; }
+body {
+  @apply bg-ink-950 text-slate-200 antialiased;
+  background-image:
+    radial-gradient(900px 500px at 12% -10%, rgba(139, 92, 246, 0.16), transparent 60%),
+    radial-gradient(800px 500px at 95% 0%, rgba(34, 211, 238, 0.10), transparent 60%);
+  background-attachment: fixed;
+}
+::selection { background: rgba(139, 92, 246, 0.45); }
+* { scrollbar-color: #242a52 transparent; scrollbar-width: thin; }
+
+@layer components {
+  .card { @apply rounded-2xl border border-white/10 bg-white/[0.035] backdrop-blur-md; }
+  .card-hover { @apply transition hover:border-white/20 hover:bg-white/[0.06]; }
+  .btn { @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-violet/70 disabled:cursor-not-allowed disabled:opacity-50; }
+  .btn-primary { @apply btn bg-brand-gradient text-white shadow-glow hover:brightness-110; }
+  .btn-ghost { @apply btn border border-white/10 bg-white/5 text-slate-100 hover:bg-white/10; }
+  .btn-danger { @apply btn border border-red-500/30 bg-red-500/10 text-red-200 hover:bg-red-500/20; }
+  .input { @apply w-full rounded-xl border border-white/10 bg-ink-900/80 px-3.5 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:border-brand-violet/70 focus:outline-none focus:ring-2 focus:ring-brand-violet/25; }
+  .label { @apply mb-1.5 block text-xs font-medium uppercase tracking-wider text-slate-400; }
+  .gradient-text { @apply bg-brand-gradient bg-clip-text text-transparent; }
+  .chip { @apply inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-xs text-slate-300; }
+}
