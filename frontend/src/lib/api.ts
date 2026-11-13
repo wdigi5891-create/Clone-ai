@@ -1,4 +1,5 @@
-export const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+// Chaîne vide = même origine (déploiement tout-en-un : Next relaie /api vers le backend).
+export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 const TOKEN_KEY = "avc_token";
 
 export class ApiError extends Error {

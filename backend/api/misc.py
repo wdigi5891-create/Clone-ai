@@ -26,6 +26,7 @@ def meta():
     """Options de l'interface et état de configuration des fournisseurs IA (sans secret)."""
     s = get_settings()
     configured = {"anthropic": bool(s.anthropic_api_key), "openai": bool(s.openai_api_key),
+                  "gemini": bool(s.gemini_api_key),
                   "faster_whisper": True, "none": False, "": False}
     return {
         "styles": [{"key": k, "label": v[0]} for k, v in prompt_engine.STYLES.items()],

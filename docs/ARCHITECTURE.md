@@ -31,7 +31,7 @@ Une étape en échec arrête le pipeline, conserve les résultats précédents e
 
 - `base.py` — interfaces `JSONModel` (`generate_json(system, prompt, schema, images)`) et `Transcriber` (`transcribe(audio)`).
 - `providers/` — `anthropic_provider.py` (Claude, sortie JSON contrainte par schéma, streaming), `openai_provider.py`
-  (vision / texte en JSON strict + Whisper), `faster_whisper_provider.py` (transcription locale).
+  (vision / texte en JSON strict + Whisper), `gemini_provider.py` (vision, texte et transcription avec une seule clé), `faster_whisper_provider.py` (transcription locale).
 - `registry.py` — choisit l'implémentation selon `VISION_PROVIDER`, `LLM_PROVIDER`, `TRANSCRIPTION_PROVIDER`.
 - `tasks.py` — consignes et schémas JSON des tâches (personnages, scène, prompt, traduction), indépendants du fournisseur.
 

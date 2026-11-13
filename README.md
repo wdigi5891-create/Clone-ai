@@ -31,7 +31,7 @@ backend/
   services/   pipeline d'analyse, prompt engine, stockage, export, import par lien, nettoyage
   video/      ffprobe, détection des scènes (PySceneDetect), images clés (FFmpeg + OpenCV)
   audio/      extraction de la piste audio
-  ai/         couche d'adaptation IA + fournisseurs (Anthropic, OpenAI, faster-whisper)
+  ai/         couche d'adaptation IA + fournisseurs (Anthropic, OpenAI, Gemini, faster-whisper)
   workers/    tâches Celery (analyse, régénération, nettoyage périodique)
   alembic/    migrations
   tests/      tests pytest
@@ -56,7 +56,9 @@ Copiez `.env.example` en `.env` à la racine. Variables indispensables :
 | `ANTHROPIC_API_KEY` | Vision + rédaction avec Claude (fournisseur par défaut de `VISION_PROVIDER` et `LLM_PROVIDER`). |
 | `OPENAI_API_KEY` | Transcription Whisper (fournisseur par défaut de `TRANSCRIPTION_PROVIDER`), et vision / rédaction si vous choisissez `openai`. |
 
-Combinaisons possibles : tout OpenAI (`VISION_PROVIDER=openai`, `LLM_PROVIDER=openai`) ; Claude + transcription locale (`TRANSCRIPTION_PROVIDER=faster_whisper` après `pip install faster-whisper`) ; ou `TRANSCRIPTION_PROVIDER=none` pour ignorer les dialogues.
+**Essai gratuit** : une seule clé Google Gemini (niveau gratuit) couvre vision, rédaction et transcription : `VISION_PROVIDER=gemini`, `LLM_PROVIDER=gemini`, `TRANSCRIPTION_PROVIDER=gemini`, `GEMINI_API_KEY=...`. Mise en ligne gratuite pas à pas : [docs/DEPLOY_FREE.md](docs/DEPLOY_FREE.md).
+
+Autres combinaisons possibles : tout OpenAI (`VISION_PROVIDER=openai`, `LLM_PROVIDER=openai`) ; Claude + transcription locale (`TRANSCRIPTION_PROVIDER=faster_whisper` après `pip install faster-whisper`) ; ou `TRANSCRIPTION_PROVIDER=none` pour ignorer les dialogues.
 
 Sans clé, l'import, l'analyse générale, le découpage et l'extraction des images fonctionnent ; les étapes IA s'arrêtent avec un message explicite et peuvent être relancées une fois la clé ajoutée. Aucun résultat factice n'est produit.
 
@@ -106,6 +108,7 @@ Les tests génèrent une vraie vidéo avec FFmpeg et exécutent le pipeline comp
 
 ## Limites connues
 
+- Avec Gemini, les horodatages des répliques sont estimés par le modèle (moins précis que Whisper).
 - Le modèle de vision n'entend pas l'audio : sons d'ambiance et musique ne sont décrits que s'ils sont déductibles de l'image, sinon marqués « non identifiable ». Ton et émotion des répliques sont des estimations.
 - L'attribution d'une réplique à un personnage n'est faite que si elle est suffisamment certaine ; il n'y a pas de diarisation audio.
 - La limitation de débit est en mémoire (un seul nœud API) ; utilisez un proxy ou Redis pour un déploiement multi-nœuds.

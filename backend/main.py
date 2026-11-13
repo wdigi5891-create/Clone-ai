@@ -44,3 +44,30 @@ async def http_error(request: Request, exc: HTTPException):
 
 for r in (auth.router, projects.router, editing.router, misc.router):
     app.include_router(r)
+
+
+if settings.frontend_proxy_url:
+    # Déploiement tout-en-un (un seul port public) : tout ce qui n'est pas /api est relayé
+    # vers le serveur Next interne. Les envois de vidéos arrivent directement sur l'API.
+    import httpx
+    from fastapi.responses import StreamingResponse
+    from starlette.background import BackgroundTask
+
+    _front = httpx.AsyncClient(base_url=settings.frontend_proxy_url, timeout=30, follow_redirects=False)
+    _HOP = {"connection", "keep-alive", "transfer-encoding", "upgrade", "proxy-authenticate",
+            "proxy-authorization", "te", "trailer"}
+
+    @app.api_route("/{path:path}", methods=["GET", "HEAD"], include_in_schema=False)
+    async def frontend(path: str, request: Request):
+        if path.startswith("api/"):
+            raise HTTPException(404, "Route inconnue.")
+        headers = {k: v for k, v in request.headers.items() if k.lower() not in _HOP | {"host"}}
+        try:
+            upstream = await _front.send(
+                _front.build_request(request.method, request.url.path, params=request.query_params, headers=headers),
+                stream=True)
+        except httpx.HTTPError:
+            raise HTTPException(503, "Interface en cours de démarrage. Rechargez la page dans un instant.")
+        out = {k: v for k, v in upstream.headers.items() if k.lower() not in _HOP}
+        return StreamingResponse(upstream.aiter_raw(), status_code=upstream.status_code, headers=out,
+                                 background=BackgroundTask(upstream.aclose))

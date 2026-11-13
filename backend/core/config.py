@@ -19,6 +19,8 @@ class Settings(BaseSettings):
     access_token_minutes: int = 60 * 24 * 7
     cors_origins: str = "http://localhost:3000"
     public_api_url: str = "http://localhost:8000"
+    # Déploiement tout-en-un : l'API relaie les pages vers le serveur Next interne
+    frontend_proxy_url: str = ""
 
     # --- Données
     # Vide = SQLite local (storage/dev.db), pratique en développement
@@ -50,9 +52,12 @@ class Settings(BaseSettings):
     url_import_allowed_hosts: str = ""
 
     # --- IA : fournisseurs interchangeables
-    vision_provider: str = "anthropic"  # anthropic | openai
-    llm_provider: str = "anthropic"  # anthropic | openai
-    transcription_provider: str = "openai"  # openai | faster_whisper
+    vision_provider: str = "anthropic"  # anthropic | openai | gemini
+    llm_provider: str = "anthropic"  # anthropic | openai | gemini
+    transcription_provider: str = "openai"  # openai | gemini | faster_whisper | none
+    gemini_api_key: str = ""
+    gemini_model: str = "gemini-3.8-flash"
+    gemini_transcription_model: str = ""  # vide = même modèle
     anthropic_api_key: str = ""
     anthropic_model: str = "claude-opus-5-5"
     anthropic_effort: str = "medium"

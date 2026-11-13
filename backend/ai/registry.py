@@ -20,6 +20,9 @@ def _json_model(provider: str) -> JSONModel:
     if provider == "openai":
         from ai.providers.openai_provider import OpenAIModel
         return OpenAIModel()
+    if provider == "gemini":
+        from ai.providers.gemini_provider import GeminiModel
+        return GeminiModel()
     raise AIConfigError(f"Fournisseur IA inconnu : « {provider} ».")
 
 
@@ -41,6 +44,9 @@ def get_transcriber() -> Transcriber | None:
     if provider == "openai":
         from ai.providers.openai_provider import OpenAITranscriber
         return OpenAITranscriber()
+    if provider == "gemini":
+        from ai.providers.gemini_provider import GeminiTranscriber
+        return GeminiTranscriber()
     if provider == "faster_whisper":
         from ai.providers.faster_whisper_provider import FasterWhisperTranscriber
         return FasterWhisperTranscriber()
